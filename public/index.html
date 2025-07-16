@@ -1,52 +1,72 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WANGA MUSIC STUDIO</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-[#0F172A] text-white font-sans min-h-screen flex flex-col items-center p-6">
-  <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-400 mb-10">
+<body class="bg-gray-900 text-white p-6 font-sans min-h-screen">
+  <h1 class="text-4xl text-center font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-cyan-400 bg-clip-text text-transparent mb-8">
     WANGA MUSIC STUDIO
-  </h1>  <!-- Search bar -->  <div class="w-full max-w-xl mb-8">
-    <input id="searchInput" type="text" placeholder="Search song title or artist..."
-      class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
-    <button onclick="handleSearch()"
-      class="mt-3 w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-700 font-semibold transition duration-300">
-      Search
-    </button>
-  </div>  <!-- Results list -->  <div id="resultsContainer" class="w-full max-w-3xl grid md:grid-cols-2 gap-4"></div>  <script>
-    async function handleSearch() {
-      const input = document.getElementById('searchInput');
-      const query = input.value.trim();
-      const resultsDiv = document.getElementById('resultsContainer');
+  </h1>
+
+  <div class="max-w-xl mx-auto">
+    <input id="searchInput" type="text" placeholder="Search song by name or artist..."
+      class="w-full px-4 py-3 rounded bg-gray-800 border border-gray-600 mb-4 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
+
+    <button onclick="searchSongs()"
+      class="w-full py-2 bg-purple-600 hover:bg-purple-700 rounded font-semibold">Search</button>
+  </div>
+
+  <div id="results" class="mt-10 grid gap-6 max-w-4xl mx-auto"></div>
+
+  <script>
+    async function searchSongs() {
+      const q = document.getElementById('searchInput').value.trim();
+      const resultsDiv = document.getElementById('results');
       resultsDiv.innerHTML = '';
 
-      if (!query) return alert('Please enter a search term.');
+      if (!q) return alert("Enter a search term");
 
       try {
-        const res = await fetch(`/api/search-multiple?q=${encodeURIComponent(query)}`);
-        const data = await res.json();
+        const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+        const songs = await res.json();
 
-        if (!data || data.length === 0) throw new Error("No results found");
+        if (!Array.isArray(songs)) return alert("No songs found");
 
-        data.forEach(video => {
+        songs.forEach(song => {
           const card = document.createElement('div');
-          card.className = "bg-gray-900 p-4 rounded-lg shadow-lg";
+          card.className = 'bg-gray-800 p-4 rounded shadow hover:shadow-lg transition';
+
           card.innerHTML = `
-            <img src="${video.thumbnail}" alt="thumbnail" class="w-full h-48 object-cover rounded mb-2">
-            <h2 class="text-lg font-semibold text-purple-300 mb-1">${video.title}</h2>
-            <p class="text-sm text-gray-400 mb-3">By ${video.author}</p>
-            <a href="/api/download-mp3?url=${encodeURIComponent(video.url)}" class="block py-2 text-center bg-blue-600 hover:bg-blue-700 rounded">Download MP3</a>
+            <img src="${song.thumbnail}" alt="Thumbnail" class="w-full rounded mb-3">
+            <h3 class="text-lg font-bold">${song.title}</h3>
+            <p class="text-sm text-gray-400 mb-3">${song.author}</p>
+            <a href="#" onclick="download('${song.url}')" class="block w-full text-center py-2 mt-2 rounded bg-blue-600 hover:bg-blue-700 font-semibold">Download MP3</a>
           `;
           resultsDiv.appendChild(card);
         });
-
-        input.value = '';
       } catch (err) {
-        alert("Failed to fetch results. Try another search.");
+        alert("Error fetching songs");
         console.error(err);
       }
     }
-  </script></body>
-</html>
+
+    async function download(videoUrl) {
+      try {
+        const res = await fetch(`/api/ytmp3?url=${encodeURIComponent(videoUrl)}`);
+        const data = await res.json();
+
+        const link = document.createElement('a');
+        link.href = data.download_url;
+        link.download = `${data.title}.mp3`;
+        link.click();
+      } catch (err) {
+        alert("Download failed");
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+    </html>
