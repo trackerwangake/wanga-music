@@ -20,9 +20,9 @@
     <h2 id="title" class="text-xl font-bold text-purple-300 mb-2"></h2>
     <p id="author" class="text-sm text-gray-400 mb-4"></p>
     <div class="flex gap-4">
-      <a id="downloadMP3" href="#" class="flex-1 py-2 text-center bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold">
+      <button id="downloadMP3" class="flex-1 py-2 text-center bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold">
         Download MP3
-      </a>
+      </button>
     </div>
   </div>  <script>
     async function handleSearch() {
@@ -51,21 +51,25 @@
           thumbnail = searchData.thumbnail;
         }
 
-        // Now get the MP3 download link
         const mp3Res = await fetch(`/api/ytmp3?url=${encodeURIComponent(videoUrl)}`);
-        const mp3Data = await mp3Res.json();
+        if (!mp3Res.ok) throw new Error('Failed to fetch MP3');
 
-        document.getElementById('title').textContent = videoTitle || mp3Data.title;
-        document.getElementById('author').textContent = videoAuthor ? `By ${videoAuthor}` : '';
-        document.getElementById('thumbnail').src = thumbnail || mp3Data.thumbnail;
-        document.getElementById('downloadMP3').href = `/api/download-mp3?url=${encodeURIComponent(videoUrl)}`;
+        const blob = await mp3Res.blob();
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        a.download = (videoTitle || "audio") + ".mp3";
+        a.click();
+
+        document.getElementById('title').textContent = videoTitle;
+        document.getElementById('author').textContent = `By ${videoAuthor}`;
+        document.getElementById('thumbnail').src = thumbnail;
 
         resultDiv.classList.remove('hidden');
-        input.value = ""; // Clear input
+        input.value = "";
       } catch (err) {
         alert("Could not fetch song. Try a different search.");
         console.error(err);
       }
     }
   </script></body>
-      </html>
+    </html>
