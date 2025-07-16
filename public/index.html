@@ -9,56 +9,63 @@
   <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-400 mb-10">
     WANGA MUSIC STUDIO
   </h1>  <!-- Search bar -->  <div class="w-full max-w-xl mb-8">
-    <input id="searchInput" type="text" placeholder="Search songs, artists, albums..."
+    <input id="searchInput" type="text" placeholder="Enter song name or YouTube URL..."
       class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500">
     <button onclick="handleSearch()"
       class="mt-3 w-full py-2 rounded-lg bg-purple-600 hover:bg-purple-700 font-semibold transition duration-300">
-      Search Music
+      Search & Download
     </button>
-  </div>  <!-- Result list -->  <div id="resultsContainer" class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6"></div>  <script>
+  </div>  <!-- Result display -->  <div id="result" class="w-full max-w-xl bg-gray-900 p-6 rounded-lg shadow-lg hidden">
+    <img id="thumbnail" class="w-full h-56 object-cover rounded-md mb-4" alt="Thumbnail">
+    <h2 id="title" class="text-xl font-bold text-purple-300 mb-2"></h2>
+    <p id="author" class="text-sm text-gray-400 mb-4"></p>
+    <div class="flex gap-4">
+      <a id="downloadMP3" href="#" class="flex-1 py-2 text-center bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold">
+        Download MP3
+      </a>
+    </div>
+  </div>  <script>
     async function handleSearch() {
       const input = document.getElementById('searchInput');
       const query = input.value.trim();
-      const container = document.getElementById('resultsContainer');
+      const resultDiv = document.getElementById('result');
 
-      if (!query) return alert('Please enter a search term');
-      container.innerHTML = '';
+      if (!query) return alert('Please enter a song name or YouTube link');
 
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-        const data = await res.json();
+        let videoUrl = query;
+        let videoTitle = '';
+        let videoAuthor = '';
+        let thumbnail = '';
 
-        if (!data.results || data.results.length === 0) throw new Error("No results");
+        // If input is not a YouTube link, search first
+        if (!query.startsWith('http')) {
+          const searchRes = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+          const searchData = await searchRes.json();
 
-        data.results.forEach(item => {
-          const card = document.createElement("div");
-          card.className = "bg-gray-900 rounded-lg p-4 shadow-lg flex flex-col items-center";
+          if (!searchData.url) throw new Error('No result found');
 
-          card.innerHTML = `
-            <img src="${item.thumbnail}" class="w-full h-48 object-cover rounded mb-3" alt="${item.title}">
-            <h3 class="text-lg font-bold text-purple-300 text-center">${item.title}</h3>
-            <p class="text-sm text-gray-400 mb-2 text-center">${item.author}</p>
-            <button onclick="downloadMP3('${item.url}')" class="mt-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-              Download MP3
-            </button>
-          `;
-          container.appendChild(card);
-        });
+          videoUrl = searchData.url;
+          videoTitle = searchData.title;
+          videoAuthor = searchData.author;
+          thumbnail = searchData.thumbnail;
+        }
+
+        // Now get the MP3 download link
+        const mp3Res = await fetch(`/api/ytmp3?url=${encodeURIComponent(videoUrl)}`);
+        const mp3Data = await mp3Res.json();
+
+        document.getElementById('title').textContent = videoTitle || mp3Data.title;
+        document.getElementById('author').textContent = videoAuthor ? `By ${videoAuthor}` : '';
+        document.getElementById('thumbnail').src = thumbnail || mp3Data.thumbnail;
+        document.getElementById('downloadMP3').href = `/api/download-mp3?url=${encodeURIComponent(videoUrl)}`;
+
+        resultDiv.classList.remove('hidden');
+        input.value = ""; // Clear input
       } catch (err) {
-        alert("Error fetching songs");
-        console.error(err);
-      }
-    }
-
-    async function downloadMP3(url) {
-      try {
-        const res = await fetch(`/api/ytmp3?url=${encodeURIComponent(url)}`);
-        const data = await res.json();
-        window.location.href = `/api/download?url=${encodeURIComponent(data.download_url)}&title=${encodeURIComponent(data.title)}`;
-      } catch (err) {
-        alert("Download failed");
+        alert("Could not fetch song. Try a different search.");
         console.error(err);
       }
     }
   </script></body>
-</html>
+      </html>
