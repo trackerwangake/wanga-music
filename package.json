@@ -1,18 +1,14 @@
 {
   "name": "wanga-music-studio",
   "version": "1.0.0",
-  "description": "A web app to search and download YouTube music as MP3 using Node.js and TailwindCSS",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "engines": {
-    "node": ">=18.0.0"
-  },
   "dependencies": {
+    "axios": "^1.4.0",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "ytdl-core": "^4.11.1",
-    "yt-search": "^2.10.8"
+    "ytdl-core": "^4.11.1"
   }
 }
