@@ -1,0 +1,21 @@
+{
+  "name": "wanga-music-studio",
+  "version": "1.0.0",
+  "description": "YouTube MP3/MP4 downloader with search and audio/video stream support",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "ytdl-core": "^4.11.2",
+    "yt-search": "^2.10.7"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "keywords": ["youtube", "mp3", "mp4", "downloader", "music", "video", "wanga"],
+  "author": "Wanga Studio",
+  "license": "MIT"
+}
