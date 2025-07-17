@@ -1,123 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WANGA USER INFO</title>
+  <meta charset="UTF-8">
+  <title>WANGA TOOLBOX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            neonblue: '#00f7ff',
-            techgray: '#0f1117',
-            techborder: '#2dd4bf'
-          },
-          boxShadow: {
-            neon: '0 0 20px #00f7ff',
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    body {
-      background: linear-gradient(to bottom right, #0a0a10, #1a1f2c);
-    }
-  </style>
 </head>
-<body class="text-white font-mono">
+<body class="bg-gray-950 text-white font-mono p-6">
+  <h1 class="text-4xl font-bold text-blue-400 mb-6 text-center">WANGA TOOLBOX 🧰</h1>
 
-  <div class="max-w-6xl mx-auto px-4 py-10">
-    <h1 class="text-4xl sm:text-5xl font-bold text-center text-neonblue mb-12 animate-pulse">⚙️ WANGA USER INFO</h1>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-    <div id="info" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
-    <div class="text-center text-gray-400 mt-10 text-sm">
-      Created by Tracker Wanga • Server Uptime: <span id="uptime" class="text-neonblue font-bold">Loading...</span>
+    <!-- QR Code Generator -->
+    <div class="bg-gray-800 rounded-2xl p-4 shadow-lg border border-blue-400">
+      <h2 class="text-xl font-semibold text-blue-300 mb-2">QR Code Generator</h2>
+      <input id="qr-input" type="text" placeholder="Enter text or URL" class="w-full p-2 rounded bg-gray-700 text-white">
+      <button onclick="generateQR()" class="mt-3 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded">Generate QR</button>
+      <canvas id="qr-code" class="mt-4 mx-auto"></canvas>
     </div>
+
+    <!-- YouTube Downloader -->
+    <div class="bg-gray-800 rounded-2xl p-4 shadow-lg border border-blue-400">
+      <h2 class="text-xl font-semibold text-blue-300 mb-2">YouTube Downloader</h2>
+      <input id="yt-url" type="text" placeholder="Enter YouTube URL" class="w-full p-2 rounded bg-gray-700 text-white">
+      <div class="flex space-x-4 mt-3">
+        <button onclick="downloadVideo('mp3')" class="px-4 py-2 bg-green-500 hover:bg-green-600 rounded">Download MP3</button>
+        <button onclick="downloadVideo('mp4')" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 rounded">Download MP4</button>
+      </div>
+    </div>
+
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
   <script>
-    const addCard = (title, value, icon) => {
-      const container = document.getElementById("info");
-      const card = document.createElement("div");
-      card.className = "bg-techgray border border-techborder rounded-xl p-5 shadow-neon hover:scale-105 transition-all";
-      card.innerHTML = `
-        <div class="text-2xl mb-2">${icon}</div>
-        <h2 class="text-lg font-bold text-neonblue mb-1">${title}</h2>
-        <p class="text-sm break-words">${value}</p>
-      `;
-      container.appendChild(card);
-    };
-
-    async function getUptime() {
-      try {
-        const res = await fetch("/api/uptime");
-        const data = await res.json();
-        document.getElementById("uptime").textContent = data.uptime;
-      } catch {
-        document.getElementById("uptime").textContent = "Unavailable";
-      }
+    function generateQR() {
+      const input = document.getElementById('qr-input').value;
+      const canvas = document.getElementById('qr-code');
+      QRCode.toCanvas(canvas, input, { width: 200, color: { dark: '#ffffff', light: '#2d3748' } });
     }
 
-    async function fetchUserInfo() {
-      // Battery
-      if (navigator.getBattery) {
-        const battery = await navigator.getBattery();
-        const level = Math.round(battery.level * 100);
-        const charging = battery.charging ? "Charging" : "Not Charging";
-        addCard("Battery", `${level}% • ${charging}`, "🔋");
-      }
-
-      // IP Address
-      try {
-        const res = await fetch("https://api.ipify.org?format=json");
-        const ip = (await res.json()).ip;
-        addCard("Public IP", ip, "🌐");
-      } catch {
-        addCard("Public IP", "Unavailable", "🌐");
-      }
-
-      // Device Info
-      addCard("Platform", navigator.platform, "📱");
-      addCard("Browser", navigator.userAgent, "🧭");
-      addCard("Language", navigator.language, "🗣️");
-      addCard("Screen", `${screen.width} x ${screen.height}`, "🖥️");
-      const fingerprint = btoa(navigator.userAgent + navigator.language + screen.width).substring(0, 12);
-      addCard("Device Fingerprint", fingerprint, "🧠");
-
-      // Network Info
-      const connection = navigator.connection || {};
-      const net = connection.effectiveType || "Unknown";
-      addCard("Network", net.toUpperCase(), "📶");
-
-      // Location + Weather
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-          const { latitude, longitude } = pos.coords;
-          addCard("Location (GPS)", `Lat: ${latitude.toFixed(4)}, Lon: ${longitude.toFixed(4)}`, "📍");
-
-          try {
-            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
-            const weather = await res.json();
-            const w = weather.current_weather;
-            addCard("Weather", `${w.temperature}°C • Code: ${w.weathercode}`, "🌦️");
-          } catch {
-            addCard("Weather", "Error fetching weather", "🌦️");
-          }
-        }, () => {
-          addCard("Location", "Permission denied", "📍");
-        });
-      } else {
-        addCard("Location", "Geolocation not supported", "📍");
-      }
-
-      getUptime();
+    function downloadVideo(format) {
+      const url = document.getElementById('yt-url').value;
+      if (!url) return alert("Please enter a YouTube URL");
+      window.open(\`/download?url=\${encodeURIComponent(url)}&format=\${format}\`, "_blank");
     }
-
-    fetchUserInfo();
   </script>
 </body>
-</html>
+  </html>
+  
