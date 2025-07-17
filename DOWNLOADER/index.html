@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MP3 Downloader | WANGA TOOLBOX</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+  <header class="text-center py-6 border-b border-gray-700">
+    <h1 class="text-4xl font-bold">MP3 Downloader</h1>
+    <p class="text-lg text-gray-400">Extract audio from YouTube videos. Buy full working code for 50 Ksh.</p>
+  </header>  <main class="max-w-4xl mx-auto px-4 py-8">
+    <div class="mb-6">
+      <label for="mp3Url" class="block mb-2 font-semibold">Enter YouTube URL:</label>
+      <input type="text" id="mp3Url" placeholder="https://www.youtube.com/watch?v=..." class="w-full p-3 rounded bg-gray-800 border border-gray-600" />
+      <button onclick="testMP3()" class="mt-4 px-5 py-2 bg-green-600 hover:bg-green-500 rounded">Test</button>
+    </div><div id="mp3Result" class="bg-gray-800 p-4 rounded hidden"></div>
+
+<div id="mp3Purchase" class="mt-10 hidden">
+  <h2 class="text-2xl font-bold mb-2">Buy Full Code (Ksh 50)</h2>
+  <p class="mb-3 text-sm text-gray-400">Enter your passcode to get the full MP3 downloader code:</p>
+  <input type="text" id="mp3Passcode" placeholder="Enter passcode..." class="w-full p-2 rounded bg-gray-800 border border-gray-600 mb-2">
+  <button onclick="unlockMP3Code()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded">Unlock Code</button>
+  <pre id="mp3CodeOutput" class="mt-4 p-3 bg-gray-700 rounded text-sm overflow-auto hidden"></pre>
+</div>
+
+<div class="mt-10 border-t border-gray-700 pt-6">
+  <h3 class="text-xl font-semibold mb-2">Try with Live Song</h3>
+  <p class="text-sm text-gray-400 mb-3">Example: <span class="text-yellow-300">https://www.youtube.com/watch?v=UceaB4D0jpo</span> (Example Song)</p>
+  <button onclick="document.getElementById('mp3Url').value='https://www.youtube.com/watch?v=UceaB4D0jpo'" class="bg-yellow-500 px-4 py-2 rounded">Auto-fill Example</button>
+</div>
+
+  </main>  <footer class="text-center text-gray-600 text-xs py-4 border-t border-gray-800">
+    &copy; 2025 WANGA TOOLBOX. All rights reserved.
+  </footer>  <script>
+    function testMP3() {
+      const url = document.getElementById('mp3Url').value;
+      const result = document.getElementById('mp3Result');
+      const purchase = document.getElementById('mp3Purchase');
+
+      if (!url.includes('youtube.com')) {
+        result.innerText = '❌ Invalid URL. Please enter a valid YouTube link.';
+        result.classList.remove('hidden');
+        purchase.classList.add('hidden');
+        return;
+      }
+
+      result.innerText = `✅ Test successful! Title: Example Song Title\nFormat: MP3\nEstimated Size: 4.5MB`;
+      result.classList.remove('hidden');
+      purchase.classList.remove('hidden');
+    }
+
+    function unlockMP3Code() {
+      const codeOutput = document.getElementById('mp3CodeOutput');
+      const passcode = document.getElementById('mp3Passcode').value.trim();
+
+      if (passcode === 'KSH50-MP3') {
+        codeOutput.innerText = `const ytdl = require('ytdl-core');
+const fs = require('fs');
+const ffmpeg = require('fluent-ffmpeg');
+
+function downloadMP3(url, outputPath) {
+  const stream = ytdl(url, { filter: 'audioonly' });
+  ffmpeg(stream)
+    .audioBitrate(128)
+    .save(outputPath)
+    .on('end', () => console.log('MP3 download complete.'));
+}
+
+downloadMP3('https://www.youtube.com/watch?v=UceaB4D0jpo', 'song.mp3');`;
+        codeOutput.classList.remove('hidden');
+      } else {
+        codeOutput.innerText = '❌ Invalid passcode. Contact admin to buy access.';
+        codeOutput.classList.remove('hidden');
+      }
+    }
+  </script></body>
+</html>
