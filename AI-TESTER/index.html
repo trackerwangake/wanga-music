@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Key Tester - WANGA TOOLBOX</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0f1115;
+      color: #e5e7eb;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .card {
+      @apply p-6 rounded-xl bg-gray-800 shadow-lg;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-6">
+  <header class="text-center mb-8">
+    <h1 class="text-4xl font-bold mb-2">AI Key Tester</h1>
+    <p class="text-gray-400">Validate Gemini, ChatGPT or YouTube API keys instantly.</p>
+  </header>
+
+  <main class="max-w-3xl mx-auto">
+    <div class="card">
+      <h2 class="text-2xl font-semibold mb-4">🔑 Test Your API Key</h2>
+
+      <label class="block mb-1">Select API:</label>
+      <select id="apiType" class="w-full mb-4 p-2 rounded bg-gray-700 text-white">
+        <option value="gemini">Gemini (Google AI)</option>
+        <option value="chatgpt">ChatGPT (OpenAI)</option>
+        <option value="youtube">YouTube Data API</option>
+      </select>
+
+      <label class="block mb-1">Paste your API key:</label>
+      <input id="apiKeyInput" type="text" placeholder="Enter API key..." class="w-full p-2 mb-4 rounded bg-gray-700 text-white">
+
+      <button onclick="testAPIKey()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Test Key</button>
+      <p id="apiTestResult" class="mt-3 text-sm"></p>
+
+      <div id="buyKeySection" class="hidden mt-4">
+        <button onclick="showPasscodeField()" class="bg-yellow-500 text-black px-4 py-2 rounded">Buy Working Key</button>
+        <div id="passcodeField" class="mt-3 hidden">
+          <input id="passcodeInput" type="text" placeholder="Paste your passcode..." class="w-full p-2 mb-2 rounded bg-gray-700 text-white">
+          <button onclick="downloadPackage()" class="bg-green-500 text-white px-4 py-2 rounded">Download Package</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    async function testAPIKey() {
+      const api = document.getElementById('apiType').value;
+      const key = document.getElementById('apiKeyInput').value;
+      const result = document.getElementById('apiTestResult');
+      result.textContent = 'Testing...';
+
+      try {
+        let valid = false;
+        if (api === 'gemini') {
+          const res = await fetch("https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=" + key, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents: [{ parts: [{ text: "Hello" }] }] })
+          });
+          valid = res.ok;
+        } else if (api === 'chatgpt') {
+          const res = await fetch("https://api.openai.com/v1/models", {
+            headers: { Authorization: "Bearer " + key }
+          });
+          valid = res.ok;
+        } else if (api === 'youtube') {
+          const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=dQw4w9WgXcQ&key=${key}`);
+          valid = res.ok;
+        }
+
+        if (valid) {
+          result.textContent = '✅ API Key is valid!';
+          result.className = 'text-green-400 mt-3';
+        } else {
+          result.textContent = '❌ Invalid API Key. Consider purchasing a working key.';
+          result.className = 'text-red-400 mt-3';
+          document.getElementById('buyKeySection').classList.remove('hidden');
+        }
+      } catch (e) {
+        result.textContent = '❌ Error testing API key: ' + e.message;
+        result.className = 'text-red-400 mt-3';
+        document.getElementById('buyKeySection').classList.remove('hidden');
+      }
+    }
+
+    function showPasscodeField() {
+      document.getElementById('passcodeField').classList.remove('hidden');
+    }
+
+    function downloadPackage() {
+      const pass = document.getElementById('passcodeInput').value.trim();
+      if (pass === 'AIKEY123') {
+        window.location.href = '/packages/gemini_package.json'; // replace with real path
+      } else {
+        alert('❌ Invalid passcode. Try again.');
+      }
+    }
+  </script>
+
+  <footer class="text-center text-gray-600 text-xs mt-10">
+    &copy; 2025 WANGA TOOLBOX. All rights reserved.
+  </footer>
+</body>
+</html>
