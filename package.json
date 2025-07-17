@@ -1,3 +1,52 @@
-{ "name": "wanga-toolbox", "version": "1.0.0", "description": "Developer toolbox with live tool testing, hardware/software feature demos, and secure package.json downloads", "main": "server.js", "scripts": { "start": "node server.js" }, "author": "Tracker Wanga", "license": "MIT", "dependencies": { "cors": "^2.8.5", "express": "^4.18.2", "body-parser": "^1.20.2", "qrcode": "^1.5.3", "multer": "^1.4.5-lts.1", "node-fetch": "^3.3.2", "fs-extra": "^11.2.0", "jimp": "^0.22.10", "tesseract.js": "^4.0.2", "public-ip": "^5.0.0", "systeminformation": "^5.21.9", "ytdl-core": "^4.11.2", "openai": "^4.27.0", "@google/generative-ai": "^0.6.1", "dotenv": "^16.3.1" }, "tools": { "mainCards": [ "qr", "ocr", "ip", "device", "mp3", "camera", "tracker" ], "sidebarTools": [ "chatgpt", "gemini", "youtube-api", "spotify-api", "deepseek-ai", "bailey-ai", "ydl-test" ], "futureTools": [ "bard", "perplexity", "huggingface-api", "midjourney", "replicate", "llama", "anthropic", "groq", "openrouter", "openai-functions", "voice-synth", "hardware-status", "cpu-temp", "disk-health", "bluetooth-scan", "wifi-scan", "usb-detect" ] } }
-
-	
+{
+  "name": "wanga-toolbox",
+  "version": "1.0.0",
+  "description": "WANGA TOOLBOX - A powerful developer toolbox for testing APIs, hardware tools, and generating valid package.json files.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Tracker Wanga",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "qrcode": "^1.5.3",
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^3.3.2",
+    "fs-extra": "^11.2.0",
+    "systeminformation": "^5.21.4",
+    "speedtest-net": "^2.1.1",
+    "battery-level": "^3.0.2",
+    "public-ip": "^5.0.0",
+    "dotenv": "^16.3.1",
+    "openai": "^4.30.0",
+    "googleapis": "^134.0.0",
+    "spotify-web-api-node": "^5.0.2"
+  },
+  "tools": {
+    "mainCards": [
+      "qr",               // QR Code Generator
+      "ocr",              // Optical Character Recognition
+      "ip",               // Public IP Viewer
+      "device",           // Device Information
+      "camera",           // Camera Test
+      "tracker",          // Time Tracker
+      "mp3",              // MP3 Downloader Tool Template
+      "battery-check",    // Battery Level and Status
+      "network-speed",    // Internet Speed Test
+      "wifi-scan-info",   // WiFi Device Info
+      "device-scan"       // Hardware and OS Details
+    ],
+    "sidebarTools": [
+      "chatgpt",          // ChatGPT API Key Tester
+      "gemini",           // Gemini API Key Tester
+      "youtube-api",      // YouTube Data API Tester
+      "spotify-api",      // Spotify API Tester
+      "deepseek-ai",      // DeepSeek AI Tester
+      "bailey-ai",        // Bailey AI Key Tester
+      "ydl-test"          // YouTube-DL Developer Tester
+    ]
+  }
+}
