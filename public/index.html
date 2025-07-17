@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WANGA TOOLBOX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to right, #0a0a0a, #10131a);
+      color: #ffffff;
+    }
+    .neon-title {
+      font-size: 2.5rem;
+      color: #ffffff;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #08f, 0 0 30px #09f;
+    }
+    .card-glow {
+      background: #111827;
+      border: 1px solid #4f46e5;
+      box-shadow: 0 0 10px rgba(79, 70, 229, 0.6);
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .sidebar-link:hover {
+      color: #38bdf8;
+      transition: color 0.2s;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+  <header class="p-4 bg-gray-900 flex justify-between items-center border-b border-blue-700">
+    <h1 class="neon-title">WANGA TOOLBOX</h1>
+    <button onclick="toggleSidebar()" class="text-blue-400 text-2xl">☰</button>
+  </header>
+
+  <aside id="sidebar" class="fixed top-0 left-0 w-64 h-full bg-gray-900 border-r border-blue-700 transform -translate-x-full transition-transform z-40 p-4 overflow-y-auto scrollbar-hide">
+    <h2 class="text-xl text-blue-300 mb-4">Developer AI & API Tools</h2>
+    <ul class="space-y-2">
+      <li><a href="#" class="block sidebar-link">🤖 Gemini API Key Tester</a></li>
+      <li><a href="#" class="block sidebar-link">💬 ChatGPT API Key Tester</a></li>
+      <li><a href="#" class="block sidebar-link">📺 YouTube API Key Tester</a></li>
+      <li><a href="#" class="block sidebar-link">🧠 DeepSeek AI Key Tester</a></li>
+      <li><a href="#" class="block sidebar-link">🎵 Spotify API Key Tester</a></li>
+      <li><a href="#" class="block sidebar-link">📥 YTDL MP3/MP4 Tool</a></li>
+      <li><a href="#" class="block sidebar-link">🎤 Music Metadata Extractor</a></li>
+      <li><a href="#" class="block sidebar-link">📸 Camera Hardware Tester</a></li>
+      <li><a href="#" class="block sidebar-link">🧰 Device & Browser Info</a></li>
+      <li><a href="#" class="block sidebar-link">🕒 Time Tracker Utility</a></li>
+      <li><a href="#" class="block sidebar-link">🌍 Geo IP Tracker</a></li>
+    </ul>
+  </aside>
+
+  <main class="flex-1 p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="card-glow p-4 rounded-xl">
+      <h3 class="text-lg font-bold text-blue-400">QR Code Generator</h3>
+      <p class="text-sm text-gray-300">Generate QR from input text. Free to test.</p>
+      <button class="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-sm" onclick="testTool('qr')">Test</button>
+      <button class="mt-2 ml-2 px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-sm">Get package.json</button>
+    </div>
+
+    <div class="card-glow p-4 rounded-xl">
+      <h3 class="text-lg font-bold text-blue-400">OCR Text Extractor</h3>
+      <p class="text-sm text-gray-300">Extract text from uploaded image. Free to test.</p>
+      <button class="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-sm" onclick="testTool('ocr')">Test</button>
+      <button class="mt-2 ml-2 px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-sm">Get package.json</button>
+    </div>
+
+    <div class="card-glow p-4 rounded-xl">
+      <h3 class="text-lg font-bold text-blue-400">Server Runtime</h3>
+      <p id="runtime" class="text-sm text-gray-300">Loading...</p>
+      <p id="user-count" class="text-sm text-green-400">Online Users: ...</p>
+    </div>
+
+    <div class="card-glow p-4 rounded-xl">
+      <h3 class="text-lg font-bold text-blue-400">IP & Geo Tracker</h3>
+      <p class="text-sm text-gray-300">Get your location and IP instantly.</p>
+      <button class="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-sm" onclick="testTool('ip')">Test</button>
+      <button class="mt-2 ml-2 px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-sm">Get package.json</button>
+    </div>
+
+    <div class="card-glow p-4 rounded-xl">
+      <h3 class="text-lg font-bold text-blue-400">MP3 Downloader</h3>
+      <p class="text-sm text-gray-300">Enter YouTube URL to preview and download.</p>
+      <button class="mt-2 px-3 py-1 bg-blue-600 hover:bg-blue-700 rounded text-sm" onclick="testTool('mp3')">Test</button>
+      <button class="mt-2 ml-2 px-3 py-1 bg-green-600 hover:bg-green-700 rounded text-sm">Get package.json</button>
+    </div>
+  </main>
+
+  <footer class="mt-auto text-center p-4 bg-gray-900 text-gray-400 border-t border-blue-700">
+    <p class="text-xs">WANGA TOOLBOX — © Tracker Wanga. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('-translate-x-full');
+    }
+
+    function testTool(tool) {
+      alert('Testing: ' + tool);
+    }
+
+    const startTime = Date.now();
+    setInterval(() => {
+      const runtime = Math.floor((Date.now() - startTime) / 1000);
+      document.getElementById('runtime').innerText = 'Server Runtime: ' + runtime + ' seconds';
+    }, 1000);
+
+    function simulateUsersOnline() {
+      const count = Math.floor(Math.random() * 100) + 1;
+      document.getElementById('user-count').innerText = 'Online Users: ' + count;
+    }
+    simulateUsersOnline();
+    setInterval(simulateUsersOnline, 5000);
+  </script>
+</body>
+</html>
