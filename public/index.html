@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WANGA USER INFO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            neonblue: '#00f7ff',
+            techgray: '#0f1117',
+            techborder: '#2dd4bf'
+          },
+          boxShadow: {
+            neon: '0 0 20px #00f7ff',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #0a0a10, #1a1f2c);
+    }
+  </style>
+</head>
+<body class="text-white font-mono">
+
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <h1 class="text-4xl sm:text-5xl font-bold text-center text-neonblue mb-12 animate-pulse">⚙️ WANGA USER INFO</h1>
+
+    <div id="info" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+
+    <div class="text-center text-gray-400 mt-10 text-sm">
+      Created by Tracker Wanga • Server Uptime: <span id="uptime" class="text-neonblue font-bold">Loading...</span>
+    </div>
+  </div>
+
+  <script>
+    const addCard = (title, value, icon) => {
+      const container = document.getElementById("info");
+      const card = document.createElement("div");
+      card.className = "bg-techgray border border-techborder rounded-xl p-5 shadow-neon hover:scale-105 transition-all";
+      card.innerHTML = `
+        <div class="text-2xl mb-2">${icon}</div>
+        <h2 class="text-lg font-bold text-neonblue mb-1">${title}</h2>
+        <p class="text-sm break-words">${value}</p>
+      `;
+      container.appendChild(card);
+    };
+
+    async function getUptime() {
+      try {
+        const res = await fetch("/api/uptime");
+        const data = await res.json();
+        document.getElementById("uptime").textContent = data.uptime;
+      } catch {
+        document.getElementById("uptime").textContent = "Unavailable";
+      }
+    }
+
+    async function fetchUserInfo() {
+      // Battery
+      if (navigator.getBattery) {
+        const battery = await navigator.getBattery();
+        const level = Math.round(battery.level * 100);
+        const charging = battery.charging ? "Charging" : "Not Charging";
+        addCard("Battery", `${level}% • ${charging}`, "🔋");
+      }
+
+      // IP Address
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        const ip = (await res.json()).ip;
+        addCard("Public IP", ip, "🌐");
+      } catch {
+        addCard("Public IP", "Unavailable", "🌐");
+      }
+
+      // Device Info
+      addCard("Platform", navigator.platform, "📱");
+      addCard("Browser", navigator.userAgent, "🧭");
+      addCard("Language", navigator.language, "🗣️");
+      addCard("Screen", `${screen.width} x ${screen.height}`, "🖥️");
+      const fingerprint = btoa(navigator.userAgent + navigator.language + screen.width).substring(0, 12);
+      addCard("Device Fingerprint", fingerprint, "🧠");
+
+      // Network Info
+      const connection = navigator.connection || {};
+      const net = connection.effectiveType || "Unknown";
+      addCard("Network", net.toUpperCase(), "📶");
+
+      // Location + Weather
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+          const { latitude, longitude } = pos.coords;
+          addCard("Location (GPS)", `Lat: ${latitude.toFixed(4)}, Lon: ${longitude.toFixed(4)}`, "📍");
+
+          try {
+            const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+            const weather = await res.json();
+            const w = weather.current_weather;
+            addCard("Weather", `${w.temperature}°C • Code: ${w.weathercode}`, "🌦️");
+          } catch {
+            addCard("Weather", "Error fetching weather", "🌦️");
+          }
+        }, () => {
+          addCard("Location", "Permission denied", "📍");
+        });
+      } else {
+        addCard("Location", "Geolocation not supported", "📍");
+      }
+
+      getUptime();
+    }
+
+    fetchUserInfo();
+  </script>
+</body>
+</html>
