@@ -1,0 +1,17 @@
+{
+  "name": "wanga-user-info",
+  "version": "1.0.0",
+  "description": "Live device and network data viewer for WANGA USER INFO",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "author": "Tracker Wanga",
+  "license": "MIT"
+}
