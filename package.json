@@ -27,26 +27,26 @@
   },
   "tools": {
     "mainCards": [
-      "qr",               // QR Code Generator
-      "ocr",              // Optical Character Recognition
-      "ip",               // Public IP Viewer
-      "device",           // Device Information
-      "camera",           // Camera Test
-      "tracker",          // Time Tracker
-      "mp3",              // MP3 Downloader Tool Template
-      "battery-check",    // Battery Level and Status
-      "network-speed",    // Internet Speed Test
-      "wifi-scan-info",   // WiFi Device Info
-      "device-scan"       // Hardware and OS Details
+      "qr",
+      "ocr",
+      "ip",
+      "device",
+      "camera",
+      "tracker",
+      "mp3",
+      "battery-check",
+      "network-speed",
+      "wifi-scan-info",
+      "device-scan"
     ],
     "sidebarTools": [
-      "chatgpt",          // ChatGPT API Key Tester
-      "gemini",           // Gemini API Key Tester
-      "youtube-api",      // YouTube Data API Tester
-      "spotify-api",      // Spotify API Tester
-      "deepseek-ai",      // DeepSeek AI Tester
-      "bailey-ai",        // Bailey AI Key Tester
-      "ydl-test"          // YouTube-DL Developer Tester
+      "chatgpt",
+      "gemini",
+      "youtube-api",
+      "spotify-api",
+      "deepseek-ai",
+      "bailey-ai",
+      "ydl-test"
     ]
   }
-}
+      }
