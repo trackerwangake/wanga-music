@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WANGA USER INFO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            graydark: '#1c1c2c',
+            neonblue: '#00f7ff',
+            neonborder: '#2dd4bf',
+          },
+          boxShadow: {
+            neon: '0 0 20px #00f7ff',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f1117 0%, #1c1c2c 100%);
+    }
+  </style>
+</head>
+<body class="text-white font-mono">
+
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <h1 class="text-3xl sm:text-4xl text-center text-neonblue font-bold mb-10 animate-pulse">
+      🚀 WANGA USER INFO
+    </h1>
+
+    <div id="info-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Cards will be injected here -->
+    </div>
+
+    <footer class="text-center text-gray-400 mt-12 text-sm">
+      Created by Tracker Wanga • <span id="footer-time"></span>
+    </footer>
+  </div>
+
+  <script>
+    async function getUserInfo() {
+      const container = document.getElementById('info-container');
+
+      const addCard = (title, value, icon) => {
+        const card = document.createElement('div');
+        card.className = "bg-graydark p-5 rounded-xl border border-neonborder shadow-neon transition hover:scale-[1.02]";
+        card.innerHTML = `
+          <div class="text-2xl mb-1">${icon}</div>
+          <h2 class="text-lg font-bold text-neonblue mb-1">${title}</h2>
+          <p class="text-sm break-words">${value}</p>
+        `;
+        container.appendChild(card);
+      };
+
+      // IP Address
+      let ip = "Unavailable";
+      try {
+        const res = await fetch("https://api.ipify.org?format=json");
+        ip = (await res.json()).ip;
+      } catch {}
+
+      // Location + Weather
+      let location = "Unknown";
+      let weather = "N/A";
+      try {
+        const geo = await fetch("https://ipapi.co/json/").then(r => r.json());
+        location = `${geo.city}, ${geo.region}`;
+        const lat = geo.latitude, lon = geo.longitude;
+        const weatherData = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`).then(r => r.json());
+        weather = `${weatherData.current_weather.temperature}°C, Code ${weatherData.current_weather.weathercode}`;
+      } catch {}
+
+      // Battery Info
+      if (navigator.getBattery) {
+        const battery = await navigator.getBattery();
+        const level = Math.round(battery.level * 100);
+        const charging = battery.charging ? "Charging" : "Not Charging";
+        addCard("Battery", `${level}% - ${charging}`, "🔋");
+      } else {
+        addCard("Battery", "Battery API not supported", "🔋");
+      }
+
+      // Network Info
+      const connection = navigator.connection || {};
+      const net = connection.effectiveType || "Unknown";
+      addCard("Network", net.toUpperCase(), "📶");
+
+      // IP
+      addCard("Public IP", ip, "🌐");
+
+      // Location
+      addCard("Location", location, "📍");
+
+      // Weather
+      addCard("Weather", weather, "🌦️");
+
+      // Screen Resolution
+      addCard("Screen Size", `${screen.width} x ${screen.height}`, "🖥️");
+
+      // Platform
+      addCard("Platform", navigator.platform, "📱");
+
+      // User Agent
+      addCard("Browser", navigator.userAgent, "🧭");
+
+      // Language
+      addCard("Language", navigator.language, "🗣️");
+
+      // Timezone
+      addCard("Timezone", Intl.DateTimeFormat().resolvedOptions().timeZone, "🕒");
+
+      // Simple Fingerprint
+      const fingerprint = btoa(navigator.userAgent + navigator.language + screen.width).substring(0, 12);
+      addCard("Fingerprint", fingerprint, "🧠");
+
+      // Footer time
+      document.getElementById("footer-time").textContent = new Date().toLocaleString();
+    }
+
+    getUserInfo();
+  </script>
+</body>
+</html>
