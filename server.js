@@ -1,24 +1,19 @@
-const express = require('express');
-const ytdl = require('ytdl-core');
-const app = express();
-const path = require('path');
+// server.js
 
-app.use(express.static('public'));
+const express = require('express'); const cors = require('cors'); const bodyParser = require('body-parser'); const multer = require('multer'); const QRCode = require('qrcode'); const fs = require('fs'); const path = require('path');
 
-app.get('/download', async (req, res) => {
-  const url = req.query.url;
-  const format = req.query.format || 'mp4';
-  if (!ytdl.validateURL(url)) return res.status(400).send("Invalid YouTube URL.");
+const app = express(); const upload = multer({ dest: 'uploads/' }); const PORT = process.env.PORT || 3000;
 
-  const title = (await ytdl.getInfo(url)).videoDetails.title.replace(/[^a-z0-9]/gi, '_');
-  res.header('Content-Disposition', `attachment; filename="${title}.${format}"`);
+app.use(cors()); app.use(bodyParser.json()); app.use(express.static('public'));
 
-  if (format === 'mp3') {
-    ytdl(url, { filter: 'audioonly' }).pipe(res);
-  } else {
-    ytdl(url).pipe(res);
-  }
-});
+// Generate QR code app.post('/api/generate-qr', async (req, res) => { const { text } = req.body; try { const qr = await QRCode.toDataURL(text); res.json({ qr }); } catch (err) { res.status(500).json({ error: 'Failed to generate QR' }); } });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('Server running on http://localhost:' + PORT));
+// Upload for OCR (mock) app.post('/api/ocr', upload.single('image'), (req, res) => { if (!req.file) return res.status(400).send('No file uploaded'); // You'd integrate real OCR here (e.g., Tesseract) res.json({ text: 'Sample OCR result (mock)' }); });
+
+// Provide downloadable package.json app.post('/api/package', (req, res) => { const { tool, code } = req.body;
+
+const allowedTools = ['qr', 'ocr', 'mp3', 'ip', 'camera']; const codes = { qr: 'QR123', ocr: 'OCR456', mp3: 'MP378', ip: 'IP102', camera: 'CAM999' };
+
+if (!allowedTools.includes(tool)) return res.status(400).json
+
+  
