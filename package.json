@@ -1,0 +1,19 @@
+{
+  "name": "wanga-toolbox",
+  "version": "1.0.0",
+  "description": "Fully working tools by Tracker Wanga",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "ytdl-core": "^4.11.1"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "author": "Tracker Wanga",
+  "license": "MIT"
+}
