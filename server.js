@@ -1,19 +1,107 @@
-// server.js
+const express = require("express");
+const cors = require("cors");
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-const express = require('express'); const cors = require('cors'); const bodyParser = require('body-parser'); const multer = require('multer'); const QRCode = require('qrcode'); const fs = require('fs'); const path = require('path');
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-const app = express(); const upload = multer({ dest: 'uploads/' }); const PORT = process.env.PORT || 3000;
+// Allowed tools
+const allowedTools = ["battery", "qr", "ocr", "gemini", "yt-api", "chatgpt", "camera", "tracker"];
 
-app.use(cors()); app.use(bodyParser.json()); app.use(express.static('public'));
+// Root route
+app.get("/", (req, res) => {
+  res.send("🚀 Welcome to WANGA TOOLBOX API - Server is running!");
+});
 
-// Generate QR code app.post('/api/generate-qr', async (req, res) => { const { text } = req.body; try { const qr = await QRCode.toDataURL(text); res.json({ qr }); } catch (err) { res.status(500).json({ error: 'Failed to generate QR' }); } });
+// Tool test route
+app.post("/api/tool", (req, res) => {
+  const tool = req.body.tool;
 
-// Upload for OCR (mock) app.post('/api/ocr', upload.single('image'), (req, res) => { if (!req.file) return res.status(400).send('No file uploaded'); // You'd integrate real OCR here (e.g., Tesseract) res.json({ text: 'Sample OCR result (mock)' }); });
+  if (!tool) {
+    return res.status(400).json({ error: "Missing tool name in request body" });
+  }
 
-// Provide downloadable package.json app.post('/api/package', (req, res) => { const { tool, code } = req.body;
+  if (!allowedTools.includes(tool)) {
+    return res.status(400).json({ error: "Invalid tool name" });
+  }
 
-const allowedTools = ['qr', 'ocr', 'mp3', 'ip', 'camera']; const codes = { qr: 'QR123', ocr: 'OCR456', mp3: 'MP378', ip: 'IP102', camera: 'CAM999' };
+  // Simulated tool test
+  switch (tool) {
+    case "battery":
+      return res.json({
+        status: "success",
+        tool,
+        result: {
+          level: "88%",
+          charging: true,
+        },
+      });
 
-if (!allowedTools.includes(tool)) return res.status(400).json
+    case "qr":
+      return res.json({
+        status: "success",
+        tool,
+        result: {
+          info: "QR Code module ready",
+        },
+      });
 
-  
+    case "ocr":
+      return res.json({
+        status: "success",
+        tool,
+        result: {
+          text: "Sample OCR Result",
+        },
+      });
+
+    case "gemini":
+    case "chatgpt":
+      return res.json({
+        status: "success",
+        tool,
+        result: {
+          prompt: "API Key required",
+          note: "Use your key to connect to Gemini or ChatGPT",
+        },
+      });
+
+    case "yt-api":
+      return res.json({
+        status: "success",
+        tool,
+        result: {
+          data: "YouTube API test passed",
+        },
+      });
+
+    case "camera":
+      return res.json({
+        status: "success",
+        tool,
+        result: {
+          device: "Camera Access Granted",
+        },
+      });
+
+    case "tracker":
+      return res.json({
+        status: "success",
+        tool,
+        result: {
+          location: "Nairobi, KE",
+          ip: req.ip,
+        },
+      });
+
+    default:
+      return res.status(500).json({ error: "Unknown tool handler" });
+  }
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`✅ WANGA TOOLBOX server running at http://localhost:${PORT}`);
+});
