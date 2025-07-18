@@ -27,29 +27,34 @@
       <h2 class="text-xl font-semibold mb-4 text-yellow-300">Tools Menu</h2>
       <ul class="space-y-2 text-white text-sm">
         <li><a href="#" class="hover:text-yellow-300">📦 System Info</a></li>
-        <li><a href="/YDL-TOOL/index.html" class="hover:text-yellow-300">🎵 YouTube Player</a></li>
-        <li><a href="/DOWNLOADER/index.html" class="hover:text-yellow-300">⬇️ MP3 Downloader</a></li>
-        <li><a href="/AI-TESTER/index.html" class="hover:text-yellow-300">🔬 API Key Test</a></li>
-        <li><a href="/OTHERS/index.html" class="hover:text-yellow-300">🧪 More Tools</a></li>
+        <li><a href="AI-TESTER/index.html" class="hover:text-yellow-300">🧠 AI Tools</a></li>
+        <li><a href="downloader/index.html" class="hover:text-yellow-300">⚡ Download Tools</a></li>
+        <li><a href="SYSTEM/index.html" class="hover:text-yellow-300">🤖System Tools</a></li>
+        <li><a href="YDL-TOOL/index.html" class="hover:text-yellow-300">🌐 Browser Info</a></li>
+        <li><a href="OTHERS/index.html" class="hover:text-yellow-300">🖥️ Other tools</a></li>
+        <li><a href="SUPPORT/index.html" class="hover:text-yellow-300">📩 Support</a></li>
       </ul>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 p-6 overflow-y-auto">
-      <h2 class="text-2xl font-bold mb-4 text-green-300">🔧 Live Tool Preview</h2>
-      <ul id="mainCards" class="space-y-4 text-sm text-white">
-        <li id="batteryCard" class="bg-zinc-800 p-4 rounded-xl shadow text-green-300">Battery Level: Loading...</li>
-        <li id="deviceCard" class="bg-zinc-800 p-4 rounded-xl shadow text-blue-300">Device Info: Loading...</li>
-        <li id="networkCard" class="bg-zinc-800 p-4 rounded-xl shadow text-yellow-300">Network Info: Loading...</li>
-        <li id="ipCard" class="bg-zinc-800 p-4 rounded-xl shadow text-purple-300">IP Address: Loading...</li>
-        <li id="locationCard" class="bg-zinc-800 p-4 rounded-xl shadow text-pink-300">Location: Loading...</li>
-        <li id="uptimeCard" class="bg-zinc-800 p-4 rounded-xl shadow text-red-300">Server Uptime: 0:00:00</li>
-        <li id="musicCard" class="bg-zinc-800 p-4 rounded-xl shadow text-white flex flex-col gap-2">
-          <span class="text-yellow-300 font-bold">🎵 YouTube Music Player</span>
+    <main class="flex-1 px-4 md:px-8 py-6 overflow-y-auto">
+      <h2 class="text-2xl font-bold mb-6 text-green-300">🔧 Live Tool Preview</h2>
+      <ul id="mainCards" class="space-y-6 text-sm text-white max-w-3xl mx-auto">
+        <li id="batteryCard" class="bg-zinc-800 p-5 rounded-xl shadow text-green-300">Battery Level: Loading...</li>
+        <li id="deviceCard" class="bg-zinc-800 p-5 rounded-xl shadow text-blue-300">Device Info: Loading...</li>
+        <li id="networkCard" class="bg-zinc-800 p-5 rounded-xl shadow text-yellow-300">Network Info: Loading...</li>
+        <li id="ipCard" class="bg-zinc-800 p-5 rounded-xl shadow text-purple-300">IP Address: Loading...</li>
+        <li id="locationCard" class="bg-zinc-800 p-5 rounded-xl shadow text-pink-300">Location: Loading...</li>
+        <li id="uptimeCard" class="bg-zinc-800 p-5 rounded-xl shadow text-red-300">Server Uptime: 0:00:00</li>
+        <li id="timeCard" class="bg-zinc-800 p-5 rounded-xl shadow text-orange-300">User Online Time: 0:00:00</li>
+        <li id="screenCard" class="bg-zinc-800 p-5 rounded-xl shadow text-cyan-300">Screen Size: Loading...</li>
+        <li id="browserCard" class="bg-zinc-800 p-5 rounded-xl shadow text-emerald-300">Browser: Loading...</li>
+        <li id="musicCard" class="bg-zinc-800 p-5 rounded-xl shadow text-white flex flex-col gap-3">
+          <span class="text-yellow-300 font-bold">🎵 MP3 Player (Random)</span>
           <audio id="audioPlayer" controls class="w-full hidden"></audio>
           <div class="flex gap-4">
-            <button id="playBtn" class="px-4 py-1 bg-green-600 rounded hover:bg-green-700">▶️ Play</button>
-            <button id="stopBtn" class="px-4 py-1 bg-red-600 rounded hover:bg-red-700">⏹️ Stop</button>
+            <button id="playBtn" class="px-4 py-2 bg-green-600 rounded hover:bg-green-700">▶️ Play</button>
+            <button id="stopBtn" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700">⏹️ Stop</button>
           </div>
           <div id="nowPlaying" class="text-xs text-gray-400">No song playing</div>
         </li>
@@ -63,24 +68,20 @@
   </footer>
 
   <script>
-    // Sidebar toggle
     document.getElementById("toggleSidebar").addEventListener("click", () => {
       document.getElementById("sidebar").classList.toggle("hidden");
     });
 
-    // Tool Scripts
     document.addEventListener("DOMContentLoaded", () => {
       // Battery
       if (navigator.getBattery) {
         navigator.getBattery().then(battery => {
-          const level = Math.round(battery.level * 100);
-          document.getElementById("batteryCard").innerText = `Battery Level: ${level}%`;
+          document.getElementById("batteryCard").innerText = `Battery Level: ${Math.round(battery.level * 100)}%`;
         });
       }
 
       // Device Info
-      document.getElementById("deviceCard").innerText =
-        `Device: ${navigator.platform}, Lang: ${navigator.language}`;
+      document.getElementById("deviceCard").innerText = `Device: ${navigator.platform}, Lang: ${navigator.language}`;
 
       // Network Info
       const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -88,12 +89,13 @@
         ? `Network: ${conn.effectiveType}, Downlink: ${conn.downlink}Mb/s`
         : "Network info not available.";
 
-      // IP
+      // IP Address
       fetch("https://api.ipify.org?format=json")
         .then(res => res.json())
         .then(data => {
           document.getElementById("ipCard").innerText = `IP Address: ${data.ip}`;
-        }).catch(() => {
+        })
+        .catch(() => {
           document.getElementById("ipCard").innerText = "Unable to fetch IP.";
         });
 
@@ -116,37 +118,50 @@
         });
       }
 
-      // Uptime
-      let seconds = 0;
+      // Server Uptime
+      let serverSeconds = 0;
       setInterval(() => {
-        seconds++;
-        const hrs = Math.floor(seconds / 3600);
-        const mins = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
-        const secs = (seconds % 60).toString().padStart(2, '0');
+        serverSeconds++;
+        const hrs = Math.floor(serverSeconds / 3600);
+        const mins = Math.floor((serverSeconds % 3600) / 60).toString().padStart(2, '0');
+        const secs = (serverSeconds % 60).toString().padStart(2, '0');
         document.getElementById("uptimeCard").innerText = `Server Uptime: ${hrs}:${mins}:${secs}`;
       }, 1000);
 
-      // YouTube Audio Player
-      const apiKey = "AIzaSyB1TB_sPnrOG3C3PbrohpT6SncCMmA7wPA"; // Replace with your real key
+      // User Online Time
+      let onlineSeconds = 0;
+      setInterval(() => {
+        onlineSeconds++;
+        const hrs = Math.floor(onlineSeconds / 3600);
+        const mins = Math.floor((onlineSeconds % 3600) / 60).toString().padStart(2, '0');
+        const secs = (onlineSeconds % 60).toString().padStart(2, '0');
+        document.getElementById("timeCard").innerText = `User Online Time: ${hrs}:${mins}:${secs}`;
+      }, 1000);
+
+      // Screen Info
+      const screenText = `Screen Size: ${window.screen.width} x ${window.screen.height}`;
+      document.getElementById("screenCard").innerText = screenText;
+
+      // Browser Info
+      const browserInfo = `${navigator.userAgent}`;
+      document.getElementById("browserCard").innerText = `Browser: ${browserInfo}`;
+
+      // Music Player (No API, MP3 URLs)
       const audioPlayer = document.getElementById("audioPlayer");
       const nowPlaying = document.getElementById("nowPlaying");
 
-      document.getElementById("playBtn").addEventListener("click", async () => {
-        const keywords = ["kenyan music", "afrobeat", "trap instrumental", "gospel hits"];
-        const randomQuery = keywords[Math.floor(Math.random() * keywords.length)];
-        const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(randomQuery)}&key=${apiKey}`);
-        const data = await res.json();
+      const mp3List = [
+        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Kevin_MacLeod/Classical_Sampler/Kevin_MacLeod_-_Canon_in_D_Major.mp3",
+        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Podington_Bear/Happy_Happy/Podington_Bear_-_Funny_Song.mp3",
+        "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Scott_Holmes_Music/Moments/Scott_Holmes_Music_-_Driven_To_Success.mp3"
+      ];
 
-        if (data.items.length) {
-          const videoId = data.items[0].id.videoId;
-          const title = data.items[0].snippet.title;
-          nowPlaying.innerText = `Now Playing: ${title}`;
-          audioPlayer.src = `https://www.youtube.com/watch?v=${videoId}`;
-          audioPlayer.classList.remove("hidden");
-          audioPlayer.play();
-        } else {
-          nowPlaying.innerText = "No songs found.";
-        }
+      document.getElementById("playBtn").addEventListener("click", () => {
+        const song = mp3List[Math.floor(Math.random() * mp3List.length)];
+        nowPlaying.innerText = `Now Playing: ${song.split("/").pop()}`;
+        audioPlayer.src = song;
+        audioPlayer.classList.remove("hidden");
+        audioPlayer.play();
       });
 
       document.getElementById("stopBtn").addEventListener("click", () => {
@@ -158,4 +173,4 @@
     });
   </script>
 </body>
-  </html>
+  </html>p
