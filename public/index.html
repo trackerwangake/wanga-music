@@ -4,196 +4,158 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>WANGA TOOLBOX</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       background-color: #0f1115;
       color: #e5e7eb;
       font-family: 'Segoe UI', sans-serif;
     }
-    .sidebar { transition: transform 0.3s ease-in-out; }
-    .sidebar.hidden { transform: translateX(-100%); }
   </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen flex flex-col">
 
   <!-- Header -->
-  <header class="flex justify-between items-center p-4 border-b border-gray-800 bg-gray-900">
-    <h1 class="text-2xl font-bold text-blue-300">THE WANGA TOOLBOX</h1>
-    <button onclick="toggleSidebar()" class="md:hidden text-white focus:outline-none">☰</button>
+  <header class="flex items-center justify-between px-6 py-4 bg-gray-900 border-b border-gray-700">
+    <h1 class="text-3xl font-bold text-blue-300">THE WANGA TOOLBOX</h1>
+    <button id="toggleSidebar" class="text-white text-2xl md:hidden">☰</button>
   </header>
 
-  <!-- Sidebar -->
-  <aside id="sidebar" class="sidebar fixed top-0 left-0 w-64 h-full bg-gray-900 p-4 border-r border-gray-800 z-40 md:relative md:block hidden md:translate-x-0">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-semibold">Available Tools</h2>
-      <button onclick="toggleSidebar()" class="text-red-400 md:hidden">✖</button>
-    </div>
-    <ul class="space-y-3 text-sm leading-6 text-white">
-      <li><a href="/AI-TESTER/index.html" class="hover:text-yellow-300">➡️ Battery Percentage</a></li>
-      <li><a href="/YDL-TOOL/index.html" class="hover:text-yellow-300">➡️ YouTube Player</a></li>
-      <li><a href="/DOWNLOADER/index.html" class="hover:text-yellow-300">➡️ MP3 Downloader</a></li>
-      <li><a href="/tools/ydl.html" class="hover:text-yellow-300">➡️ YDL Tool</a></li>
-      <li><a href="/tools/ai.html" class="text-yellow-300">🔬 AI API Test Tools</a></li>
-      <li class="text-xs text-gray-400">Gemini, ChatGPT, DeepSeek, YouTube, more...</li>
-      <li><a href="/tools/other.html" class="hover:text-yellow-300">🧰 Other Tools</a></li>
-    </ul>
-  </aside>
+  <div class="flex flex-1">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="hidden md:block w-64 bg-gray-900 border-r border-gray-800 p-4">
+      <h2 class="text-xl font-semibold mb-4 text-yellow-300">Tools Menu</h2>
+      <ul class="space-y-2 text-white text-sm">
+        <li><a href="#" class="hover:text-yellow-300">📦 System Info</a></li>
+        <li><a href="/YDL-TOOL/index.html" class="hover:text-yellow-300">🎵 YouTube Player</a></li>
+        <li><a href="/DOWNLOADER/index.html" class="hover:text-yellow-300">⬇️ MP3 Downloader</a></li>
+        <li><a href="/tools/ai.html" class="hover:text-yellow-300">🔬 API Key Test</a></li>
+        <li><a href="/tools/other.html" class="hover:text-yellow-300">🧪 More Tools</a></li>
+      </ul>
+    </aside>
 
-  <!-- Main Content -->
-  <main class="md:ml-64 p-6">
-    <h2 class="text-3xl font-bold mb-6">Welcome to WANGA TOOLBOX</h2>
-    <p class="mb-4 text-gray-400">Choose any tool from the cards below to begin testing.</p>
-
-    <div id="mainCards" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
-  </main>
-
-  <!-- Modal -->
-  <div id="toolModal" class="hidden fixed inset-0 bg-black bg-opacity-60 justify-center items-center z-50">
-    <div class="bg-gray-800 p-6 rounded shadow-xl w-11/12 md:w-1/2 max-h-[80vh] overflow-auto">
-      <div class="flex justify-between items-center mb-4">
-        <h3 id="modalTitle" class="text-lg font-bold"></h3>
-        <button onclick="closeModal()" class="text-red-400 text-xl">×</button>
-      </div>
-      <div id="modalContent" class="text-sm text-white"></div>
-    </div>
+    <!-- Main Content -->
+    <main class="flex-1 p-6 overflow-y-auto">
+      <h2 class="text-2xl font-bold mb-4 text-green-300">🔧 Live Tool Preview</h2>
+      <ul id="mainCards" class="space-y-4 text-sm text-white">
+        <li id="batteryCard" class="bg-zinc-800 p-4 rounded-xl shadow text-green-300">Battery Level: Loading...</li>
+        <li id="deviceCard" class="bg-zinc-800 p-4 rounded-xl shadow text-blue-300">Device Info: Loading...</li>
+        <li id="networkCard" class="bg-zinc-800 p-4 rounded-xl shadow text-yellow-300">Network Info: Loading...</li>
+        <li id="ipCard" class="bg-zinc-800 p-4 rounded-xl shadow text-purple-300">IP Address: Loading...</li>
+        <li id="locationCard" class="bg-zinc-800 p-4 rounded-xl shadow text-pink-300">Location: Loading...</li>
+        <li id="uptimeCard" class="bg-zinc-800 p-4 rounded-xl shadow text-red-300">Server Uptime: 0:00:00</li>
+        <li id="musicCard" class="bg-zinc-800 p-4 rounded-xl shadow text-white flex flex-col gap-2">
+          <span class="text-yellow-300 font-bold">🎵 YouTube Music Player</span>
+          <audio id="audioPlayer" controls class="w-full hidden"></audio>
+          <div class="flex gap-4">
+            <button id="playBtn" class="px-4 py-1 bg-green-600 rounded hover:bg-green-700">▶️ Play</button>
+            <button id="stopBtn" class="px-4 py-1 bg-red-600 rounded hover:bg-red-700">⏹️ Stop</button>
+          </div>
+          <div id="nowPlaying" class="text-xs text-gray-400">No song playing</div>
+        </li>
+      </ul>
+    </main>
   </div>
 
   <!-- Footer -->
   <footer class="text-center text-gray-600 text-xs py-4 border-t border-gray-800">
-    &copy; 2025 THE WANGA TOOLBOX. All rights reserved.
+    &copy; Tracker Wanga ™ — All rights reserved.
   </footer>
 
-  <!-- Inline Script -->
   <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("hidden");
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      initMainTools();
+    // Sidebar toggle
+    document.getElementById("toggleSidebar").addEventListener("click", () => {
+      document.getElementById("sidebar").classList.toggle("hidden");
     });
 
-    function initMainTools() {
-      const main = document.getElementById("mainCards");
-      const tools = [
-        { name: "Battery %", action: showBatteryStatus },
-        { name: "Network Info", action: showNetworkInfo },
-        { name: "WiFi Scanner", action: scanWifi },
-        { name: "Bluetooth Status", action: checkBluetooth },
-        { name: "Device Info", action: getDeviceInfo },
-        { name: "IP Address", action: getIPAddress },
-        { name: "YouTube Player", action: showYouTubePlayer },
-        { name: "Online Counter", action: showOnlineCount },
-        { name: "Uptime", action: showUptime }
-      ];
-
-      tools.forEach(({ name, action }) => {
-        const card = document.createElement("div");
-        card.className = "p-4 rounded-lg bg-gray-800 hover:bg-gray-700 text-center cursor-pointer";
-        card.innerText = name;
-        card.onclick = () => openModal(name, action);
-        main.appendChild(card);
-      });
-    }
-
-    function openModal(title, contentFunc) {
-      document.getElementById("modalTitle").innerText = title;
-      const content = contentFunc();
-      const contentEl = document.getElementById("modalContent");
-      if (typeof content === "string") {
-        contentEl.innerHTML = content;
-      } else {
-        contentEl.innerHTML = "";
-        contentEl.appendChild(content);
+    // Tool Scripts
+    document.addEventListener("DOMContentLoaded", () => {
+      // Battery
+      if (navigator.getBattery) {
+        navigator.getBattery().then(battery => {
+          const level = Math.round(battery.level * 100);
+          document.getElementById("batteryCard").innerText = `Battery Level: ${level}%`;
+        });
       }
-      document.getElementById("toolModal").classList.remove("hidden");
-      document.getElementById("toolModal").classList.add("flex");
-    }
 
-    function closeModal() {
-      const modal = document.getElementById("toolModal");
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-    }
+      // Device Info
+      document.getElementById("deviceCard").innerText =
+        `Device: ${navigator.platform}, Lang: ${navigator.language}`;
 
-    function showBatteryStatus() {
-      if (!navigator.getBattery) return "Battery API not supported.";
-      navigator.getBattery().then(battery => {
-        document.getElementById("modalContent").innerHTML =
-          `<p>Battery Level: ${(battery.level * 100).toFixed(0)}%</p>`;
-      });
-      return "<p>Loading battery info...</p>";
-    }
-
-    function showNetworkInfo() {
+      // Network Info
       const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-      if (!conn) return "<p>Network info not available.</p>";
-      return `<p>Type: ${conn.effectiveType}<br>Downlink: ${conn.downlink}Mb/s<br>RTT: ${conn.rtt}ms</p>`;
-    }
+      document.getElementById("networkCard").innerText = conn
+        ? `Network: ${conn.effectiveType}, Downlink: ${conn.downlink}Mb/s`
+        : "Network info not available.";
 
-    function scanWifi() {
-      return `<p>WiFi scan requires secure permissions.<br>Use native apps or PWA for advanced WiFi access.</p>`;
-    }
-
-    function checkBluetooth() {
-      return navigator.bluetooth
-        ? `<p>Bluetooth API is supported. Click to scan devices (future).</p>`
-        : `<p>Bluetooth not supported on this browser.</p>`;
-    }
-
-    function getDeviceInfo() {
-      return `<p>User Agent: ${navigator.userAgent}<br>Platform: ${navigator.platform}<br>Language: ${navigator.language}</p>`;
-    }
-
-    function getIPAddress() {
+      // IP
       fetch("https://api.ipify.org?format=json")
         .then(res => res.json())
         .then(data => {
-          document.getElementById("modalContent").innerHTML = `<p>Your IP Address: ${data.ip}</p>`;
-        })
-        .catch(() => {
-          document.getElementById("modalContent").innerHTML = `<p>Unable to fetch IP address.</p>`;
+          document.getElementById("ipCard").innerText = `IP Address: ${data.ip}`;
+        }).catch(() => {
+          document.getElementById("ipCard").innerText = "Unable to fetch IP.";
         });
-      return "<p>Fetching IP address...</p>";
-    }
 
-    function showYouTubePlayer() {
-      return `
-        <div>
-          <iframe id="ytAudio" width="100%" height="100" src="https://www.youtube.com/embed?listType=playlist&list=PLFgquLnL59alCl_2TQvOiD5Vgm1hCaGSI&enablejsapi=1" allow="autoplay"></iframe>
-          <div class="mt-4">
-            <button onclick="document.getElementById('ytAudio').contentWindow.postMessage('{\"event\":\"command\",\"func\":\"playVideo\",\"args\":[]}', '*')" class="bg-green-500 text-white px-3 py-1 rounded">Play</button>
-            <button onclick="document.getElementById('ytAudio').contentWindow.postMessage('{\"event\":\"command\",\"func\":\"pauseVideo\",\"args\":[]}', '*')" class="bg-red-500 text-white px-3 py-1 rounded">Stop</button>
-          </div>
-        </div>
-      `;
-    }
-
-    function showOnlineCount() {
-      fetch("/api/online")
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById("modalContent").innerHTML = `<p>Online Users: ${data.count}</p>`;
-        })
-        .catch(() => {
-          document.getElementById("modalContent").innerHTML = `<p>Unable to fetch online users.</p>`;
+      // Geolocation
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+          const { latitude, longitude } = pos.coords;
+          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
+            .then(res => res.json())
+            .then(loc => {
+              const area = loc.address?.county || loc.address?.suburb || "Unknown area";
+              const country = loc.address?.country || "Unknown country";
+              document.getElementById("locationCard").innerText = `Location: ${area}, ${country}`;
+            })
+            .catch(() => {
+              document.getElementById("locationCard").innerText = `Location: ${latitude}, ${longitude}`;
+            });
+        }, () => {
+          document.getElementById("locationCard").innerText = "Location access denied.";
         });
-      return "<p>Checking online count...</p>";
-    }
+      }
 
-    function showUptime() {
-      fetch("/api/uptime")
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById("modalContent").innerHTML = `<p>Uptime: ${data.seconds} seconds</p>`;
-        })
-        .catch(() => {
-          document.getElementById("modalContent").innerHTML = `<p>Unable to fetch uptime.</p>`;
-        });
-      return "<p>Checking uptime...</p>";
-    }
+      // Uptime
+      let seconds = 0;
+      setInterval(() => {
+        seconds++;
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+        const secs = (seconds % 60).toString().padStart(2, '0');
+        document.getElementById("uptimeCard").innerText = `Server Uptime: ${hrs}:${mins}:${secs}`;
+      }, 1000);
+
+      // YouTube Audio Player
+      const apiKey = "AIzaSyB1TB_sPnrOG3C3PbrohpT6SncCMmA7wPA"; // Replace with your real key
+      const audioPlayer = document.getElementById("audioPlayer");
+      const nowPlaying = document.getElementById("nowPlaying");
+
+      document.getElementById("playBtn").addEventListener("click", async () => {
+        const keywords = ["kenyan music", "afrobeat", "trap instrumental", "gospel hits"];
+        const randomQuery = keywords[Math.floor(Math.random() * keywords.length)];
+        const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=1&q=${encodeURIComponent(randomQuery)}&key=${apiKey}`);
+        const data = await res.json();
+
+        if (data.items.length) {
+          const videoId = data.items[0].id.videoId;
+          const title = data.items[0].snippet.title;
+          nowPlaying.innerText = `Now Playing: ${title}`;
+          audioPlayer.src = `https://www.youtube.com/watch?v=${videoId}`;
+          audioPlayer.classList.remove("hidden");
+          audioPlayer.play();
+        } else {
+          nowPlaying.innerText = "No songs found.";
+        }
+      });
+
+      document.getElementById("stopBtn").addEventListener("click", () => {
+        audioPlayer.pause();
+        audioPlayer.src = "";
+        audioPlayer.classList.add("hidden");
+        nowPlaying.innerText = "No song playing";
+      });
+    });
   </script>
 </body>
-    </html>
+  </html>
