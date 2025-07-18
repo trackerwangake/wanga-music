@@ -13,8 +13,8 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 // Serve static tool directories
-app.use("/ydl", express.static(path.join(__dirname, "YDL-TOOL")));
-app.use("/ai", express.static(path.join(__dirname, "AI-TESTER")));
+app.use("/YDL-TOOL", express.static(path.join(__dirname, "YDL-TOOL")));
+app.use("/AI-TESTER", express.static(path.join(__dirname, "AI-TESTER")));
 app.use("/downloader", express.static(path.join(__dirname, "DOWNLOADER")));
 app.use("/others", express.static(path.join(__dirname, "OTHERS")));
 
